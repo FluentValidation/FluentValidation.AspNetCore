@@ -54,16 +54,3 @@ if (foo)
 
 }
 ```
-
-## Building the Documentation
-
-The documentation is built separately from the source code. Building the documentation requires Python 3 and pip. This is then used to install Sphinx and dependencies, which then enable `make` to build the site.
-
-For example, on Linux / within WSL:
-
-* `sudo apt install python3-pip`
-* `cd docs` to go to the docs directory
-* `pip3 install -r requirements.txt` to install the required packages for the docs
-* On WSL, you may need to exit and restart at this point.
-* `PATH=$PATH:~/.local/lib/python3.8/site-packages` (you may want to add this to your `.bashrc` file as well.)
-* `make html` to build the site or `make serve` to watch for changes.
