@@ -29,19 +29,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FluentValidation.AspNetCore\FluentValidation.AspNetCore.csproj" />
-    <ProjectReference Include="..\FluentValidation\FluentValidation.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="TestMessages.Designer.cs">
       <DependentUpon>TestMessages.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="..\FluentValidation.Tests\CultureScope.cs">
-      <Link>CultureScope.cs</Link>
-    </Compile>
-    <Compile Include="..\FluentValidation.Tests\TestExtensions.cs">
-      <Link>TestExtensions.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
