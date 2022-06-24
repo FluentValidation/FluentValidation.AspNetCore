@@ -5,7 +5,7 @@ body:
 - type: markdown
   attributes:
     value: | 
-      Thanks for taking the time to file a bug report! Before filling out a new issue, please first check to see if your question has been answered in an existing issue, or in the project documentation at [https://docs.fluentvalidation.net](https://docs.fluentvalidation.net)
+      Thanks for taking the time to file a bug report! Before filling out a new issue, please first check to see if your question has been answered in an existing issue, [in the readme](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation) or in the documentation for the main FluentValidation project at [https://docs.fluentvalidation.net](https://docs.fluentvalidation.net)
       
       **Please note** FluentValidation is supported for free on a voluntary basis. If you use FluentValidation please [sponsor the project](https://github.com/sponsors/JeremySkinner) so that its development can continue. Bug reports from sponsors will be prioritised.
       
