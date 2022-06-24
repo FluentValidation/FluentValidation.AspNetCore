@@ -1,6 +1,3 @@
-FluentValidation is validation library for .NET that uses a fluent interface
-and lambda expressions for building strongly-typed validation rules.
-
 The `FluentValidation.AspNetCore` package extends FluentValidation to enable automatic validation within ASP.NET Core Controllers.
 
 Instructions for using this package can be found [on the github project page](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation).
