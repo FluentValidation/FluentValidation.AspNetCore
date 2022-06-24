@@ -1,10 +1,9 @@
 FluentValidation is validation library for .NET that uses a fluent interface
 and lambda expressions for building strongly-typed validation rules.
 
-The `FluentValidation.AspNetCore` package extends FluentValidation to enable automatic validation
-within ASP.NET Core Controllers.
+The `FluentValidation.AspNetCore` package extends FluentValidation to enable automatic validation within ASP.NET Core Controllers.
 
-Instructions for using this package can be found at [https://docs.fluentvalidation.net/en/latest/aspnet.html](https://docs.fluentvalidation.net/en/latest/aspnet.html)
+Instructions for using this package can be found [on the github project page](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation).
 
 ### Supporting the project
 
@@ -16,9 +15,11 @@ You can sponsor the project via either [GitHub sponsors](https://github.com/spon
 
 ### Full Documentation
 
-Full documentation can be found at
+Documentation for using FluentValidation.AspNetCore can be found [on the github project page](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation).
+
+Documentation for the main FluentValidation package can be found at
 [https://docs.fluentvalidation.net](https://docs.fluentvalidation.net)
 
 ### Release Notes and Change Log
 
-Release notes [can be found on GitHub](https://github.com/FluentValidation/FluentValidation/releases).
+Release notes [can be found on GitHub](https://github.com/FluentValidation/FluentValidation.AspNetCore/releases).
