@@ -12,8 +12,14 @@ body:
       Please take the time to fill in this form as completely as possible. If you leave out sections there is a high likelihood your issue will be closed.
 - type: input
   attributes:
+    label: FluentValidation.AspNetCore version
+    description: Which version of FluentValidation.AspNetCore are you using? 
+  validations:
+    required: true
+- type: input
+  attributes:
     label: FluentValidation version
-    description: Which version of FluentValidation are you using? Please note that only FluentValidation versions 9.x and 10.x are supported. Issues related to older versions will be closed. 
+    description: Which version of FluentValidation are you using? 
   validations:
     required: true
 - type: dropdown
