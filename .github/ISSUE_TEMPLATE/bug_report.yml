@@ -16,10 +16,18 @@ body:
     description: Which version of FluentValidation are you using? Please note that only FluentValidation versions 9.x and 10.x are supported. Issues related to older versions will be closed. 
   validations:
     required: true
-- type: input
+- type: dropdown
   attributes:
     label: ASP.NET version
-    description: If you are using FluentValidation with ASP.NET, please provide the version of ASP.NET that you're using (eg .NET Core 3.1, .NET 5 etc). Leave this blank if you're not using ASP.NET.
+    description: Please select which version of ASP.NET Core you're running  
+    options:
+      - .NET 7 (Preview)
+      - .NET 6
+      - .NET 5
+      - .NET Core 3.1 
+      - An older version
+  validations:
+    required: true
 - type: textarea
   attributes:
     label: Summary
