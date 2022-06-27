@@ -167,7 +167,7 @@ namespace FluentValidation.AspNetCore {
 
 		public void Configure(MvcViewOptions options) {
 			var provider = new FluentValidationClientModelValidatorProvider(_httpContextAccessor);
-			_action(provider);
+			_action?.Invoke(provider);
 			options.ClientModelValidatorProviders.Add(provider);
 		}
 	}
