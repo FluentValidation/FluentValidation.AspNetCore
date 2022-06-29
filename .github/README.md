@@ -370,7 +370,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 > **Note**
-> Note that the `AddFluentValidationClientsideAdapters` method is only available in FluentValidation 11.1 and newer. In older versions, you should use the `AddFluentValidation` method which enables *both* auto-validation and clientside adapters. If you only want clientside adapters and don't want auto validation, you can configure this by calling `services.AddFluentValidation(config => config.AutomaticValidationEnabled = false)`
+> Note that the `AddFluentValidationClientsideAdapters` method is only available in FluentValidation 11.1 and newer. In older versions, you should use the `AddFluentValidation` method which enables *both* auto-validation and clientside adapters. If you only want clientside adapters and don't want auto validation in 11.0 and older, you can configure this by calling `services.AddFluentValidation(config => config.AutomaticValidationEnabled = false)`
 
 Alternatively, instead of using client-side validation you could instead execute your full server-side rules via AJAX using a library such as [FormHelper](https://github.com/sinanbozkus/FormHelper). This allows you to use the full power of FluentValidation, while still having a responsive user experience.
 
