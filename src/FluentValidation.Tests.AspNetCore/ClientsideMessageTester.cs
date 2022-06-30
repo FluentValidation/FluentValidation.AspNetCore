@@ -20,6 +20,7 @@
 
 namespace FluentValidation.Tests;
 
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,9 +31,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 public class ClientsideMessageTester : IClassFixture<WebAppFixture> {
+	private readonly WebAppFixture _webApp;
 	private readonly HttpClient _client;
 
 	public ClientsideMessageTester(WebAppFixture webApp) {
+		_webApp = webApp;
+
 		_client = webApp.CreateClientWithServices(services => {
 #pragma warning disable CS0618
 			services.AddMvc().AddNewtonsoftJson().AddFluentValidation();
@@ -43,6 +47,23 @@ public class ClientsideMessageTester : IClassFixture<WebAppFixture> {
 			services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 		});
 		CultureScope.SetDefaultCulture();
+	}
+
+	[Fact]
+	public async Task Works_with_AddFluentValidationClientsideAdapters() {
+		// This version of the test uses AddFluentValidationClientsideAdapters
+		// rather than AddFluentValidation()
+		var client = _webApp.CreateClientWithServices(services => {
+			services.AddMvc();
+			services.AddFluentValidationClientsideAdapters();
+			services.AddValidatorsFromAssemblyContaining<TestController>();
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddScoped<ClientsideScopedDependency>();
+			services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+		});
+
+		var msg = await client.GetClientsideMessage("Required", "data-val-required");
+		msg.ShouldEqual("'Required' must not be empty.");
 	}
 
 	[Fact]

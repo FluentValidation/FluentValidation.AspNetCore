@@ -148,6 +148,10 @@ namespace FluentValidation.AspNetCore {
 			services.AddHttpContextAccessor();
 			services.TryAddSingleton(ValidatorOptions.Global);
 
+#pragma warning disable CS0618
+			services.TryAddScoped<IValidatorFactory, ServiceProviderValidatorFactory>();
+#pragma warning restore CS0618
+
 			services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<MvcViewOptions>, FluentValidationViewOptionsSetup>(s => {
 				return new FluentValidationViewOptionsSetup(configuration, s.GetService<IHttpContextAccessor>());
 			}));
