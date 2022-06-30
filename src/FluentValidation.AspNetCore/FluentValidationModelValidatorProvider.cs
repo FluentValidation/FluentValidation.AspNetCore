@@ -79,10 +79,19 @@ namespace FluentValidation.AspNetCore {
 				return Enumerable.Empty<ModelValidationResult>();
 			}
 
+			IValidator validator;
+
 #pragma warning disable CS0618
-			var factory = mvContext.ActionContext.HttpContext.RequestServices.GetService(typeof(IValidatorFactory)) as IValidatorFactory;
+			var factory = mvContext.ActionContext.HttpContext.RequestServices.GetService<IValidatorFactory>();
 #pragma warning restore CS0618
-			var validator = factory?.GetValidator(mvContext.ModelMetadata.ModelType);
+
+			if (factory != null) {
+				validator = factory?.GetValidator(mvContext.ModelMetadata.ModelType);
+			}
+			else {
+				validator = mvContext.ActionContext.HttpContext.RequestServices.GetService(mvContext.ModelMetadata.ModelType) as IValidator;
+			}
+
 
 			if (validator != null) {
 				var customizations = GetCustomizations(mvContext.ActionContext, mvContext.Model);

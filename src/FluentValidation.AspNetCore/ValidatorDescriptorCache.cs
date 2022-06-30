@@ -22,6 +22,7 @@ namespace FluentValidation.AspNetCore {
 	using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+	using Microsoft.Extensions.DependencyInjection;
 
 	/// <summary>
 	/// Caches the validators used when generating clientside metadata.
@@ -48,11 +49,19 @@ namespace FluentValidation.AspNetCore {
 				return descriptor;
 			}
 
+			IValidator validator;
+
 #pragma warning disable CS0618
-			var validatorFactory = (IValidatorFactory)httpContextAccessor.HttpContext.RequestServices.GetService(typeof(IValidatorFactory));
+			var validatorFactory = httpContextAccessor.HttpContext.RequestServices.GetService<IValidatorFactory>();
 #pragma warning restore CS0618
 
-			var validator = validatorFactory.GetValidator(modelType);
+			if (validatorFactory != null) {
+				validator = validatorFactory.GetValidator(modelType);
+			}
+			else {
+				validator = httpContextAccessor.HttpContext.RequestServices.GetService(modelType) as IValidator;
+			}
+
 			descriptor = validator?.CreateDescriptor();
 			cache[modelType] = descriptor;
 			return descriptor;
