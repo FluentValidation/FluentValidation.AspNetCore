@@ -16,27 +16,27 @@
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+namespace FluentValidation.AspNetCore;
 
-	internal class FluentValidationBindingMetadataProvider : IBindingMetadataProvider {
-		public const string Prefix = "_FV_REQUIRED|";
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
-		/// <summary>
-		/// If we're validating a non-nullable value type then
-		/// MVC will automatically add a "Required" error message.
-		/// We prefix these messages with a placeholder, so we can identify and remove them
-		/// during the validation process.
-		/// <see cref="FluentValidationVisitor"/>
-		/// <see cref="MvcValidationHelper.RemoveImplicitRequiredErrors"/>
-		/// <see cref="MvcValidationHelper.ReApplyImplicitRequiredErrorsNotHandledByFV"/>
-		/// </summary>
-		/// <param name="context"></param>
-		public void CreateBindingMetadata(BindingMetadataProviderContext context) {
-			if (context.Key.MetadataKind == ModelMetadataKind.Property) {
-				var original = context.BindingMetadata.ModelBindingMessageProvider.ValueMustNotBeNullAccessor;
-				context.BindingMetadata.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(s => Prefix + original(s));
-			}
+internal class FluentValidationBindingMetadataProvider : IBindingMetadataProvider {
+	public const string Prefix = "_FV_REQUIRED|";
+
+	/// <summary>
+	/// If we're validating a non-nullable value type then
+	/// MVC will automatically add a "Required" error message.
+	/// We prefix these messages with a placeholder, so we can identify and remove them
+	/// during the validation process.
+	/// <see cref="FluentValidationVisitor"/>
+	/// <see cref="MvcValidationHelper.RemoveImplicitRequiredErrors"/>
+	/// <see cref="MvcValidationHelper.ReApplyImplicitRequiredErrorsNotHandledByFV"/>
+	/// </summary>
+	/// <param name="context"></param>
+	public void CreateBindingMetadata(BindingMetadataProviderContext context) {
+		if (context.Key.MetadataKind == ModelMetadataKind.Property) {
+			var original = context.BindingMetadata.ModelBindingMessageProvider.ValueMustNotBeNullAccessor;
+			context.BindingMetadata.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(s => Prefix + original(s));
 		}
 	}
 }

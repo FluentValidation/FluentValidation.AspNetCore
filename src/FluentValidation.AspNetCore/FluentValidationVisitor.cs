@@ -16,26 +16,27 @@
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using System;
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.AspNetCore.Mvc.ModelBinding;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using static MvcValidationHelper;
+namespace FluentValidation.AspNetCore;
 
-	internal class FluentValidationVisitor : ValidationVisitor {
-		public FluentValidationVisitor(ActionContext actionContext, IModelValidatorProvider validatorProvider, ValidatorCache validatorCache, IModelMetadataProvider metadataProvider, ValidationStateDictionary validationState)
-			: base(actionContext, validatorProvider, validatorCache, metadataProvider, validationState) {
-			ValidateComplexTypesIfChildValidationFails = true;
-		}
+using System;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using static MvcValidationHelper;
 
-		// This overload needs to be in place for both .NET 5 and .NET Core 2/3
-		public override bool Validate(ModelMetadata metadata, string key, object model, bool alwaysValidateAtTopLevel) {
-			bool BaseValidate()
-				=> base.Validate(metadata, key, model, alwaysValidateAtTopLevel);
+internal class FluentValidationVisitor : ValidationVisitor {
+	public FluentValidationVisitor(ActionContext actionContext, IModelValidatorProvider validatorProvider, ValidatorCache validatorCache, IModelMetadataProvider metadataProvider, ValidationStateDictionary validationState)
+		: base(actionContext, validatorProvider, validatorCache, metadataProvider, validationState) {
+		ValidateComplexTypesIfChildValidationFails = true;
+	}
 
-			return ValidateInternal(metadata, key, model, BaseValidate);
-		}
+	// This overload needs to be in place for both .NET 5 and .NET Core 2/3
+	public override bool Validate(ModelMetadata metadata, string key, object model, bool alwaysValidateAtTopLevel) {
+		bool BaseValidate()
+			=> base.Validate(metadata, key, model, alwaysValidateAtTopLevel);
+
+		return ValidateInternal(metadata, key, model, BaseValidate);
+	}
 
 #if !NETCOREAPP3_1
 		// .NET 5+ has this additional overload as an entry point.
@@ -47,28 +48,27 @@ namespace FluentValidation.AspNetCore {
 		}
 #endif
 
-		private bool ValidateInternal(ModelMetadata metadata, string key, object model, Func<bool> continuation) {
-			SetRootMetadata(Context, metadata);
+	private bool ValidateInternal(ModelMetadata metadata, string key, object model, Func<bool> continuation) {
+		SetRootMetadata(Context, metadata);
 
-			// Store and remove any implicit required messages.
-			// Later we'll re-add those that are still relevant.
-			var requiredErrorsNotHandledByFv = RemoveImplicitRequiredErrors(Context);
+		// Store and remove any implicit required messages.
+		// Later we'll re-add those that are still relevant.
+		var requiredErrorsNotHandledByFv = RemoveImplicitRequiredErrors(Context);
 
-			// Apply any customizations made with the CustomizeValidatorAttribute
-			if (model != null) {
-				CacheCustomizations(Context, model, key);
-			}
-
-			var result = continuation();
-
-			// Re-add errors that we took out if FV didn't add a key.
-			ReApplyImplicitRequiredErrorsNotHandledByFV(requiredErrorsNotHandledByFv);
-
-			// Remove duplicates. This can happen if someone has implicit child validation turned on and also adds an explicit child validator.
-			RemoveDuplicateModelstateEntries(Context);
-
-			return result;
+		// Apply any customizations made with the CustomizeValidatorAttribute
+		if (model != null) {
+			CacheCustomizations(Context, model, key);
 		}
 
+		var result = continuation();
+
+		// Re-add errors that we took out if FV didn't add a key.
+		ReApplyImplicitRequiredErrorsNotHandledByFV(requiredErrorsNotHandledByFv);
+
+		// Remove duplicates. This can happen if someone has implicit child validation turned on and also adds an explicit child validator.
+		RemoveDuplicateModelstateEntries(Context);
+
+		return result;
 	}
+
 }

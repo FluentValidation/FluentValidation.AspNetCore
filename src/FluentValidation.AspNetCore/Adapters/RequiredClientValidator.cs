@@ -15,37 +15,37 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using System;
-	using System.Collections.Generic;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class RequiredClientValidator : ClientValidatorBase{
-		public RequiredClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+using System;
+using System.Collections.Generic;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using Validators;
 
+internal class RequiredClientValidator : ClientValidatorBase{
+	public RequiredClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-required", GetErrorMessage(context));
+	}
+
+	private string GetErrorMessage(ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
+		string messageTemplate;
+		try {
+			messageTemplate = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			messageTemplate = cfg.LanguageManager.GetString("NotEmptyValidator");
 		}
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-required", GetErrorMessage(context));
-		}
-
-		private string GetErrorMessage(ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
-			string messageTemplate;
-			try {
-				messageTemplate = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				messageTemplate = cfg.LanguageManager.GetString("NotEmptyValidator");
-			}
-
-			var message = formatter.BuildMessage(messageTemplate);
-			return message;
-		}
+		var message = formatter.BuildMessage(messageTemplate);
+		return message;
 	}
 }

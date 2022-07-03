@@ -15,32 +15,31 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore
-{
-	using System;
-	using System.Collections.Generic;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class CreditCardClientValidator : ClientValidatorBase {
-		public CreditCardClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
-		}
+using System;
+using System.Collections.Generic;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using Validators;
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
-			string message;
-			try {
-				message = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				message = cfg.LanguageManager.GetString("CreditCardValidator");
-			}
-			message = formatter.BuildMessage(message);
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-creditcard", message);
+internal class CreditCardClientValidator : ClientValidatorBase {
+	public CreditCardClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
+		string message;
+		try {
+			message = Component.GetUnformattedErrorMessage();
 		}
+		catch (NullReferenceException) {
+			message = cfg.LanguageManager.GetString("CreditCardValidator");
+		}
+		message = formatter.BuildMessage(message);
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-creditcard", message);
 	}
 }

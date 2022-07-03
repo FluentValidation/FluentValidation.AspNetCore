@@ -15,35 +15,35 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using Internal;
-	using Validators;
-	using System.Linq;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+namespace FluentValidation.AspNetCore;
 
-	public abstract class ClientValidatorBase : IClientModelValidator {
-		public IPropertyValidator Validator { get; }
-		public IValidationRule Rule { get; }
-		public IRuleComponent Component { get; }
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using Internal;
+using Validators;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-		public ClientValidatorBase(IValidationRule rule, IRuleComponent component) {
-			Component = component;
-			Validator = component.Validator;
-			Rule = rule;
+public abstract class ClientValidatorBase : IClientModelValidator {
+	public IPropertyValidator Validator { get; }
+	public IValidationRule Rule { get; }
+	public IRuleComponent Component { get; }
+
+	public ClientValidatorBase(IValidationRule rule, IRuleComponent component) {
+		Component = component;
+		Validator = component.Validator;
+		Rule = rule;
+	}
+
+	public abstract void AddValidation(ClientModelValidationContext context);
+
+	protected static bool MergeAttribute(IDictionary<string, string> attributes, string key, string value) {
+		if (attributes.ContainsKey(key)) {
+			return false;
 		}
 
-		public abstract void AddValidation(ClientModelValidationContext context);
-
-		protected static bool MergeAttribute(IDictionary<string, string> attributes, string key, string value) {
-			if (attributes.ContainsKey(key)) {
-				return false;
-			}
-
-			attributes.Add(key, value);
-			return true;
-		}
+		attributes.Add(key, value);
+		return true;
 	}
 }

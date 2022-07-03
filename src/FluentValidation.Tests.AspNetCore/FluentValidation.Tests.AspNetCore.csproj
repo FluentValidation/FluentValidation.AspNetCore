@@ -7,6 +7,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
+    <LangVersion>10</LangVersion>
+    <NoWarn>$(NoWarn);1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

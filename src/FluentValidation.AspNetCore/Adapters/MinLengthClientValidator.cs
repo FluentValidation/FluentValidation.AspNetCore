@@ -18,47 +18,47 @@
 
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using System;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class MinLengthClientValidator : ClientValidatorBase {
-		public override void AddValidation(ClientModelValidationContext context) {
-			var lengthVal = (ILengthValidator) Validator;
+using System;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using Validators;
 
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-minlength", GetErrorMessage(lengthVal, context));
-			MergeAttribute(context.Attributes, "data-val-minlength-min", lengthVal.Min.ToString());
+internal class MinLengthClientValidator : ClientValidatorBase {
+	public override void AddValidation(ClientModelValidationContext context) {
+		var lengthVal = (ILengthValidator) Validator;
+
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-minlength", GetErrorMessage(lengthVal, context));
+		MergeAttribute(context.Attributes, "data-val-minlength-min", lengthVal.Min.ToString());
+	}
+
+	private string GetErrorMessage(ILengthValidator lengthVal, ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+
+		var formatter = cfg.MessageFormatterFactory()
+			.AppendPropertyName(Rule.GetDisplayName(null))
+			.AppendArgument("MinLength", lengthVal.Min)
+			.AppendArgument("MaxLength", lengthVal.Max);
+
+		string message;
+		try {
+			message = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			message = cfg.LanguageManager.GetString("MinimumLength_Simple");
 		}
 
-		private string GetErrorMessage(ILengthValidator lengthVal, ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-
-			var formatter = cfg.MessageFormatterFactory()
-				.AppendPropertyName(Rule.GetDisplayName(null))
-				.AppendArgument("MinLength", lengthVal.Min)
-				.AppendArgument("MaxLength", lengthVal.Max);
-
-			string message;
-			try {
-				message = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				message = cfg.LanguageManager.GetString("MinimumLength_Simple");
-			}
-
-			if (message.Contains("{TotalLength}")) {
-				message = cfg.LanguageManager.GetString("MinimumLength_Simple");
-			}
-
-			message = formatter.BuildMessage(message);
-			return message;
+		if (message.Contains("{TotalLength}")) {
+			message = cfg.LanguageManager.GetString("MinimumLength_Simple");
 		}
 
-		public MinLengthClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
-		}
+		message = formatter.BuildMessage(message);
+		return message;
+	}
+
+	public MinLengthClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
 	}
 }

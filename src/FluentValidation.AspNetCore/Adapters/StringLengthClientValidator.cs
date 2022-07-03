@@ -15,61 +15,59 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using System;
-	using System.Collections.Generic;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class StringLengthClientValidator : ClientValidatorBase {
-		public StringLengthClientValidator(IValidationRule rule, IRuleComponent component)
-			: base(rule, component) {
+using System;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Validators;
+
+internal class StringLengthClientValidator : ClientValidatorBase {
+	public StringLengthClientValidator(IValidationRule rule, IRuleComponent component)
+		: base(rule, component) {
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		var lengthVal = (ILengthValidator)Validator;
+
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-length", GetErrorMessage(lengthVal, context));
+		MergeAttribute(context.Attributes, "data-val-length-max", lengthVal.Max.ToString());
+		MergeAttribute(context.Attributes, "data-val-length-min", lengthVal.Min.ToString());
+	}
+
+	private string GetErrorMessage(ILengthValidator lengthVal, ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+
+		var formatter = cfg.MessageFormatterFactory()
+			.AppendPropertyName(Rule.GetDisplayName(null))
+			.AppendArgument("MinLength", lengthVal.Min)
+			.AppendArgument("MaxLength", lengthVal.Max);
+
+		string message;
+		try {
+			message = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			if (lengthVal is IExactLengthValidator) {
+				message = cfg.LanguageManager.GetString("ExactLength_Simple");
+			}
+			else {
+				message = cfg.LanguageManager.GetString("Length_Simple");
+			}
 		}
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			var lengthVal = (ILengthValidator)Validator;
 
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-length", GetErrorMessage(lengthVal, context));
-			MergeAttribute(context.Attributes, "data-val-length-max", lengthVal.Max.ToString());
-			MergeAttribute(context.Attributes, "data-val-length-min", lengthVal.Min.ToString());
+		if (message.Contains("{TotalLength}")) {
+			if (lengthVal is IExactLengthValidator) {
+				message = cfg.LanguageManager.GetString("ExactLength_Simple");
+			}
+			else {
+				message = cfg.LanguageManager.GetString("Length_Simple");
+			}
 		}
 
-		private string GetErrorMessage(ILengthValidator lengthVal, ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-
-			var formatter = cfg.MessageFormatterFactory()
-				.AppendPropertyName(Rule.GetDisplayName(null))
-				.AppendArgument("MinLength", lengthVal.Min)
-				.AppendArgument("MaxLength", lengthVal.Max);
-
-			string message;
-			try {
-				message = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				if (lengthVal is IExactLengthValidator) {
-					message = cfg.LanguageManager.GetString("ExactLength_Simple");
-				}
-				else {
-					message = cfg.LanguageManager.GetString("Length_Simple");
-				}
-			}
-
-
-			if (message.Contains("{TotalLength}")) {
-				if (lengthVal is IExactLengthValidator) {
-					message = cfg.LanguageManager.GetString("ExactLength_Simple");
-				}
-				else {
-					message = cfg.LanguageManager.GetString("Length_Simple");
-				}
-			}
-
-			message = formatter.BuildMessage(message);
-			return message;
-		}
+		message = formatter.BuildMessage(message);
+		return message;
 	}
 }

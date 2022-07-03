@@ -15,34 +15,34 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using System;
-	using System.Collections.Generic;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class EmailClientValidator : ClientValidatorBase {
+using System;
+using System.Collections.Generic;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using Validators;
 
-		public EmailClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+internal class EmailClientValidator : ClientValidatorBase {
+
+	public EmailClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
+
+		string messageTemplate;
+		try {
+			messageTemplate = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			messageTemplate = cfg.LanguageManager.GetString("EmailValidator");
 		}
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
-
-			string messageTemplate;
-			try {
-				messageTemplate = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				messageTemplate = cfg.LanguageManager.GetString("EmailValidator");
-			}
-
-			string message = formatter.BuildMessage(messageTemplate);
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-email", message);
-		}
+		string message = formatter.BuildMessage(messageTemplate);
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-email", message);
 	}
 }

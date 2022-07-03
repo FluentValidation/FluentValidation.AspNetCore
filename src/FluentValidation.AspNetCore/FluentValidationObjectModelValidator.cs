@@ -16,37 +16,37 @@
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using System.Collections.Generic;
-	using System.Linq;
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.AspNetCore.Mvc.ModelBinding;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+namespace FluentValidation.AspNetCore;
 
-	internal class FluentValidationObjectModelValidator : ObjectModelValidator {
-		private readonly bool _runMvcValidation;
-		private readonly FluentValidationModelValidatorProvider _fvProvider;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-		public FluentValidationObjectModelValidator(
-			IModelMetadataProvider modelMetadataProvider,
-			IList<IModelValidatorProvider> validatorProviders, bool runMvcValidation)
+internal class FluentValidationObjectModelValidator : ObjectModelValidator {
+	private readonly bool _runMvcValidation;
+	private readonly FluentValidationModelValidatorProvider _fvProvider;
+
+	public FluentValidationObjectModelValidator(
+		IModelMetadataProvider modelMetadataProvider,
+		IList<IModelValidatorProvider> validatorProviders, bool runMvcValidation)
 		: base(modelMetadataProvider, validatorProviders) {
-			_runMvcValidation = runMvcValidation;
-			_fvProvider = validatorProviders.SingleOrDefault(x => x is FluentValidationModelValidatorProvider) as FluentValidationModelValidatorProvider;
-		}
+		_runMvcValidation = runMvcValidation;
+		_fvProvider = validatorProviders.SingleOrDefault(x => x is FluentValidationModelValidatorProvider) as FluentValidationModelValidatorProvider;
+	}
 
-		public override ValidationVisitor GetValidationVisitor(ActionContext actionContext, IModelValidatorProvider validatorProvider, ValidatorCache validatorCache, IModelMetadataProvider metadataProvider, ValidationStateDictionary validationState) {
-			// Setting as to whether we should run only FV or FV + the other validator providers
-			var validatorProviderToUse = _runMvcValidation ? validatorProvider : _fvProvider;
+	public override ValidationVisitor GetValidationVisitor(ActionContext actionContext, IModelValidatorProvider validatorProvider, ValidatorCache validatorCache, IModelMetadataProvider metadataProvider, ValidationStateDictionary validationState) {
+		// Setting as to whether we should run only FV or FV + the other validator providers
+		var validatorProviderToUse = _runMvcValidation ? validatorProvider : _fvProvider;
 
-			var visitor = new FluentValidationVisitor(
-				actionContext,
-				validatorProviderToUse,
-				validatorCache,
-				metadataProvider,
-				validationState);
+		var visitor = new FluentValidationVisitor(
+			actionContext,
+			validatorProviderToUse,
+			validatorCache,
+			metadataProvider,
+			validationState);
 
-			return visitor;
-		}
+		return visitor;
 	}
 }

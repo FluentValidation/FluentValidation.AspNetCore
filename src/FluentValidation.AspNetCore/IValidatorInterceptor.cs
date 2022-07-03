@@ -15,33 +15,32 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore
-{
-	using FluentValidation.Results;
-	using Microsoft.AspNetCore.Mvc;
-	using FluentValidation;
+namespace FluentValidation.AspNetCore;
+
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+
+/// <summary>
+/// Specifies an interceptor that can be used to provide hooks that will be called before and after MVC validation occurs.
+/// </summary>
+public interface IValidatorInterceptor {
+	/// <summary>
+	/// Invoked before MVC validation takes place which allows the ValidationContext to be customized prior to validation.
+	/// It should return a ValidationContext object.
+	/// </summary>
+	/// <param name="actionContext">Action Context</param>
+	/// <param name="commonContext">Validation Context</param>
+	/// <returns>Validation Context</returns>
+	IValidationContext BeforeAspNetValidation(ActionContext actionContext, IValidationContext commonContext);
 
 	/// <summary>
-	/// Specifies an interceptor that can be used to provide hooks that will be called before and after MVC validation occurs.
+	/// Invoked after MVC validation takes place which allows the result to be customized.
+	/// It should return a ValidationResult.
 	/// </summary>
-	public interface IValidatorInterceptor {
-		/// <summary>
-		/// Invoked before MVC validation takes place which allows the ValidationContext to be customized prior to validation.
-		/// It should return a ValidationContext object.
-		/// </summary>
-		/// <param name="actionContext">Action Context</param>
-		/// <param name="commonContext">Validation Context</param>
-		/// <returns>Validation Context</returns>
-		IValidationContext BeforeAspNetValidation(ActionContext actionContext, IValidationContext commonContext);
-
-		/// <summary>
-		/// Invoked after MVC validation takes place which allows the result to be customized.
-		/// It should return a ValidationResult.
-		/// </summary>
-		/// <param name="actionContext">Controller Context</param>
-		/// <param name="validationContext">Validation Context</param>
-		/// <param name="result">The result of validation.</param>
-		/// <returns>Validation Context</returns>
-		ValidationResult AfterAspNetValidation(ActionContext actionContext, IValidationContext validationContext, ValidationResult result);
-	}
+	/// <param name="actionContext">Controller Context</param>
+	/// <param name="validationContext">Validation Context</param>
+	/// <param name="result">The result of validation.</param>
+	/// <returns>Validation Context</returns>
+	ValidationResult AfterAspNetValidation(ActionContext actionContext, IValidationContext validationContext, ValidationResult result);
 }

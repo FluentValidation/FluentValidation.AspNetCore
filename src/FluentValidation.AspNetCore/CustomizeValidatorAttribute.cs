@@ -16,94 +16,93 @@
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using System;
-	using FluentValidation.Internal;
-	using System.Reflection;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Microsoft.Extensions.DependencyInjection;
-	using System.Linq;
+namespace FluentValidation.AspNetCore;
 
-	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
-	public class CustomizeValidatorAttribute : Attribute {
+using System;
+using FluentValidation.Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
-		/// <summary>
-		/// Specifies the ruleset which should be used when executing this validator.
-		/// This can be a comma separated list of rulesets. The string "*" can be used to indicate all rulesets.
-		/// The string "default" can be used to specify those rules not in an explict ruleset.
-		/// </summary>
-		public string RuleSet { get; set; }
+[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
+public class CustomizeValidatorAttribute : Attribute {
 
-		/// <summary>
-		/// Specifies a whitelist of properties that should be validated, as a comma-separated list.
-		/// </summary>
-		public string Properties { get; set; }
+	/// <summary>
+	/// Specifies the ruleset which should be used when executing this validator.
+	/// This can be a comma separated list of rulesets. The string "*" can be used to indicate all rulesets.
+	/// The string "default" can be used to specify those rules not in an explict ruleset.
+	/// </summary>
+	public string RuleSet { get; set; }
 
-		/// <summary>
-		/// Specifies an interceptor that can be used to customize the validation process.
-		/// </summary>
-		public Type Interceptor { get; set; }
+	/// <summary>
+	/// Specifies a whitelist of properties that should be validated, as a comma-separated list.
+	/// </summary>
+	public string Properties { get; set; }
 
-		/// <summary>
-		/// Indicates whether this model should skip being validated. The default is false.
-		/// </summary>
-		public bool Skip { get; set; }
+	/// <summary>
+	/// Specifies an interceptor that can be used to customize the validation process.
+	/// </summary>
+	public Type Interceptor { get; set; }
 
-		/// <summary>
-		/// Builds a validator selector from the options specified in the attribute's properties.
-		/// </summary>
-		/// <param name="mvContext"></param>
-		public IValidatorSelector ToValidatorSelector(ModelValidationContext mvContext) {
-			IValidatorSelector selector;
+	/// <summary>
+	/// Indicates whether this model should skip being validated. The default is false.
+	/// </summary>
+	public bool Skip { get; set; }
 
-			if (!string.IsNullOrEmpty(RuleSet)) {
-				var rulesets = RuleSet.Split(',', ';')
-					.Select(x => x.Trim())
-					.ToArray();
-				selector = CreateRulesetValidatorSelector(mvContext, rulesets);
-			}
-			else if (!string.IsNullOrEmpty(Properties)) {
-				var properties = Properties.Split(',', ';')
-					.Select(x => x.Trim())
-					.ToArray();
-				selector = CreateMemberNameValidatorSelector(mvContext, properties);
-			}
-			else {
-				selector = CreateDefaultValidatorSelector(mvContext);
-			}
+	/// <summary>
+	/// Builds a validator selector from the options specified in the attribute's properties.
+	/// </summary>
+	/// <param name="mvContext"></param>
+	public IValidatorSelector ToValidatorSelector(ModelValidationContext mvContext) {
+		IValidatorSelector selector;
 
-			return selector;
+		if (!string.IsNullOrEmpty(RuleSet)) {
+			var rulesets = RuleSet.Split(',', ';')
+				.Select(x => x.Trim())
+				.ToArray();
+			selector = CreateRulesetValidatorSelector(mvContext, rulesets);
+		}
+		else if (!string.IsNullOrEmpty(Properties)) {
+			var properties = Properties.Split(',', ';')
+				.Select(x => x.Trim())
+				.ToArray();
+			selector = CreateMemberNameValidatorSelector(mvContext, properties);
+		}
+		else {
+			selector = CreateDefaultValidatorSelector(mvContext);
 		}
 
-		protected virtual IValidatorSelector CreateRulesetValidatorSelector(ModelValidationContext mvContext, string[] ruleSets) {
-			var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetRequiredService<ValidatorConfiguration>();
-			return cfg.ValidatorSelectors.RulesetValidatorSelectorFactory(ruleSets);
+		return selector;
+	}
+
+	protected virtual IValidatorSelector CreateRulesetValidatorSelector(ModelValidationContext mvContext, string[] ruleSets) {
+		var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetRequiredService<ValidatorConfiguration>();
+		return cfg.ValidatorSelectors.RulesetValidatorSelectorFactory(ruleSets);
+	}
+
+	protected virtual IValidatorSelector CreateMemberNameValidatorSelector(ModelValidationContext mvContext, string[] properties) {
+		var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		return cfg.ValidatorSelectors.MemberNameValidatorSelectorFactory(properties);
+	}
+
+	protected virtual IValidatorSelector CreateDefaultValidatorSelector(ModelValidationContext mvContext) {
+		var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		return cfg.ValidatorSelectors.DefaultValidatorSelectorFactory();
+	}
+
+	public IValidatorInterceptor GetInterceptor() {
+		if (Interceptor == null) return null;
+
+		if (!typeof(IValidatorInterceptor).IsAssignableFrom(Interceptor)) {
+			throw new InvalidOperationException("Type {0} is not an IValidatorInterceptor. The Interceptor property of CustomizeValidatorAttribute must implement IValidatorInterceptor.");
 		}
 
-		protected virtual IValidatorSelector CreateMemberNameValidatorSelector(ModelValidationContext mvContext, string[] properties) {
-			var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			return cfg.ValidatorSelectors.MemberNameValidatorSelectorFactory(properties);
+		var instance = Activator.CreateInstance(Interceptor) as IValidatorInterceptor;
+
+		if (instance == null) {
+			throw new InvalidOperationException("Type {0} is not an IValidatorInterceptor. The Interceptor property of CustomizeValidatorAttribute must implement IValidatorInterceptor.");
 		}
 
-		protected virtual IValidatorSelector CreateDefaultValidatorSelector(ModelValidationContext mvContext) {
-			var cfg = mvContext.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			return cfg.ValidatorSelectors.DefaultValidatorSelectorFactory();
-		}
-
-		public IValidatorInterceptor GetInterceptor() {
-			if (Interceptor == null) return null;
-
-			if (!typeof(IValidatorInterceptor).IsAssignableFrom(Interceptor)) {
-				throw new InvalidOperationException("Type {0} is not an IValidatorInterceptor. The Interceptor property of CustomizeValidatorAttribute must implement IValidatorInterceptor.");
-			}
-
-			var instance = Activator.CreateInstance(Interceptor) as IValidatorInterceptor;
-
-			if (instance == null) {
-				throw new InvalidOperationException("Type {0} is not an IValidatorInterceptor. The Interceptor property of CustomizeValidatorAttribute must implement IValidatorInterceptor.");
-			}
-
-			return instance;
-		}
+		return instance;
 	}
 }

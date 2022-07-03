@@ -15,53 +15,53 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using System;
-	using System.Globalization;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class RangeClientValidator : ClientValidatorBase {
-		IBetweenValidator RangeValidator => (IBetweenValidator)Validator;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using System;
+using System.Globalization;
+using Validators;
 
-		public RangeClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+internal class RangeClientValidator : ClientValidatorBase {
+	IBetweenValidator RangeValidator => (IBetweenValidator)Validator;
 
+	public RangeClientValidator(IValidationRule rule, IRuleComponent component) : base(rule, component) {
+
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		if (RangeValidator.To != null && RangeValidator.From != null) {
+			MergeAttribute(context.Attributes, "data-val", "true");
+			MergeAttribute(context.Attributes, "data-val-range", GetErrorMessage(context));
+			MergeAttribute(context.Attributes, "data-val-range-max", Convert.ToString(RangeValidator.To, CultureInfo.InvariantCulture));
+			MergeAttribute(context.Attributes, "data-val-range-min", Convert.ToString(RangeValidator.From, CultureInfo.InvariantCulture));
+		}
+	}
+
+	private string GetErrorMessage(ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+
+		var formatter = cfg.MessageFormatterFactory()
+			.AppendPropertyName(Rule.GetDisplayName(null))
+			.AppendArgument("From", RangeValidator.From)
+			.AppendArgument("To", RangeValidator.To);
+
+		string message;
+
+		try {
+			message = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			message = cfg.LanguageManager.GetString("InclusiveBetween_Simple");
 		}
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			if (RangeValidator.To != null && RangeValidator.From != null) {
-				MergeAttribute(context.Attributes, "data-val", "true");
-				MergeAttribute(context.Attributes, "data-val-range", GetErrorMessage(context));
-				MergeAttribute(context.Attributes, "data-val-range-max", Convert.ToString(RangeValidator.To, CultureInfo.InvariantCulture));
-				MergeAttribute(context.Attributes, "data-val-range-min", Convert.ToString(RangeValidator.From, CultureInfo.InvariantCulture));
-			}
+		if (message.Contains("{PropertyValue}")) {
+			message = cfg.LanguageManager.GetString("InclusiveBetween_Simple");
 		}
+		message = formatter.BuildMessage(message);
 
-		private string GetErrorMessage(ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-
-			var formatter = cfg.MessageFormatterFactory()
-				.AppendPropertyName(Rule.GetDisplayName(null))
-				.AppendArgument("From", RangeValidator.From)
-				.AppendArgument("To", RangeValidator.To);
-
-			string message;
-
-			try {
-				message = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				message = cfg.LanguageManager.GetString("InclusiveBetween_Simple");
-			}
-
-			if (message.Contains("{PropertyValue}")) {
-				message = cfg.LanguageManager.GetString("InclusiveBetween_Simple");
-			}
-			message = formatter.BuildMessage(message);
-
-			return message;
-		}
+		return message;
 	}
 }

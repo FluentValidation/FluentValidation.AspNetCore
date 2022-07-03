@@ -18,72 +18,72 @@
 
 #endregion
 
-namespace FluentValidation.AspNetCore {
-	using FluentValidation.Internal;
-	using FluentValidation.Results;
-	using Microsoft.AspNetCore.Http;
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.AspNetCore.Mvc.ModelBinding;
-	using Microsoft.AspNetCore.Mvc.RazorPages;
+namespace FluentValidation.AspNetCore;
 
-	public static class ValidationResultExtension {
+using FluentValidation.Internal;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-		private const string _rulesetKey = "_FV_ClientSideRuleSet";
+public static class ValidationResultExtension {
 
-		/// <summary>
-		/// Stores the errors in a ValidationResult object to the specified modelstate dictionary.
-		/// </summary>
-		/// <param name="result">The validation result to store</param>
-		/// <param name="modelState">The ModelStateDictionary to store the errors in.</param>
-		/// <param name="prefix">An optional prefix. If omitted, the property names will be the keys. If specified, the prefix will be concatenated to the property name with a period. Eg "user.Name"</param>
-		public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState, string prefix) {
-			if (!result.IsValid) {
-				foreach (var error in result.Errors) {
-					string key = string.IsNullOrEmpty(prefix)
-						? error.PropertyName
-						: string.IsNullOrEmpty(error.PropertyName)
-							? prefix
-							: prefix + "." + error.PropertyName;
-					modelState.AddModelError(key, error.ErrorMessage);
-				}
+	private const string _rulesetKey = "_FV_ClientSideRuleSet";
+
+	/// <summary>
+	/// Stores the errors in a ValidationResult object to the specified modelstate dictionary.
+	/// </summary>
+	/// <param name="result">The validation result to store</param>
+	/// <param name="modelState">The ModelStateDictionary to store the errors in.</param>
+	/// <param name="prefix">An optional prefix. If omitted, the property names will be the keys. If specified, the prefix will be concatenated to the property name with a period. Eg "user.Name"</param>
+	public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState, string prefix) {
+		if (!result.IsValid) {
+			foreach (var error in result.Errors) {
+				string key = string.IsNullOrEmpty(prefix)
+					? error.PropertyName
+					: string.IsNullOrEmpty(error.PropertyName)
+						? prefix
+						: prefix + "." + error.PropertyName;
+				modelState.AddModelError(key, error.ErrorMessage);
 			}
 		}
-
-		/// <summary>
-		/// Indicates which Rule Sets should be used when generating clientside messages.
-		/// </summary>
-		/// <param name="context">Http context</param>
-		/// <param name="ruleSets">Array of ruleset names</param>
-		public static void SetRulesetForClientsideMessages(this HttpContext context, params string[] ruleSets) => context.Items[_rulesetKey] = ruleSets;
-
-		/// <summary>
-		/// Gets the Rule Sets used to generate clientside validation metadata.
-		/// </summary>
-		/// <param name="context">Http context</param>
-		/// <returns>Array of ruleset names</returns>
-		public static string[] GetRuleSetsForClientValidation(this HttpContext context) {
-			// If the httpContext is null (for example, if IHttpContextProvider hasn't been registered) then just assume default ruleset.
-			// This is OK because if we're actually using the attribute, the OnActionExecuting will have caught the fact that the provider is not registered.
-
-			if (context?.Items != null && context.Items.ContainsKey(_rulesetKey) && context?.Items[_rulesetKey] is string[] ruleSets) {
-				return ruleSets;
-			}
-
-			return new[] { RulesetValidatorSelector.DefaultRuleSetName };
-		}
-
-		/// <summary>
-		/// Indicates which Rule Sets should be used when generating clientside messages.
-		/// </summary>
-		/// <param name="context">Controller context</param>
-		/// <param name="ruleSets">Array of ruleset names</param>
-		public static void SetRulesetForClientsideMessages(this ControllerContext context, params string[] ruleSets) => context.HttpContext.SetRulesetForClientsideMessages(ruleSets);
-
-		/// <summary>
-		/// Indicates which Rule Sets should be used when generating clientside messages.
-		/// </summary>
-		/// <param name="context">Page context</param>
-		/// <param name="ruleSets">Array of ruleset names</param>
-		public static void SetRulesetForClientsideMessages(this PageContext context, params string[] ruleSets) => context.HttpContext.SetRulesetForClientsideMessages(ruleSets);
 	}
+
+	/// <summary>
+	/// Indicates which Rule Sets should be used when generating clientside messages.
+	/// </summary>
+	/// <param name="context">Http context</param>
+	/// <param name="ruleSets">Array of ruleset names</param>
+	public static void SetRulesetForClientsideMessages(this HttpContext context, params string[] ruleSets) => context.Items[_rulesetKey] = ruleSets;
+
+	/// <summary>
+	/// Gets the Rule Sets used to generate clientside validation metadata.
+	/// </summary>
+	/// <param name="context">Http context</param>
+	/// <returns>Array of ruleset names</returns>
+	public static string[] GetRuleSetsForClientValidation(this HttpContext context) {
+		// If the httpContext is null (for example, if IHttpContextProvider hasn't been registered) then just assume default ruleset.
+		// This is OK because if we're actually using the attribute, the OnActionExecuting will have caught the fact that the provider is not registered.
+
+		if (context?.Items != null && context.Items.ContainsKey(_rulesetKey) && context?.Items[_rulesetKey] is string[] ruleSets) {
+			return ruleSets;
+		}
+
+		return new[] { RulesetValidatorSelector.DefaultRuleSetName };
+	}
+
+	/// <summary>
+	/// Indicates which Rule Sets should be used when generating clientside messages.
+	/// </summary>
+	/// <param name="context">Controller context</param>
+	/// <param name="ruleSets">Array of ruleset names</param>
+	public static void SetRulesetForClientsideMessages(this ControllerContext context, params string[] ruleSets) => context.HttpContext.SetRulesetForClientsideMessages(ruleSets);
+
+	/// <summary>
+	/// Indicates which Rule Sets should be used when generating clientside messages.
+	/// </summary>
+	/// <param name="context">Page context</param>
+	/// <param name="ruleSets">Array of ruleset names</param>
+	public static void SetRulesetForClientsideMessages(this PageContext context, params string[] ruleSets) => context.HttpContext.SetRulesetForClientsideMessages(ruleSets);
 }

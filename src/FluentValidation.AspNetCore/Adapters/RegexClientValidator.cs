@@ -15,37 +15,37 @@
 //
 // The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
 #endregion
-namespace FluentValidation.AspNetCore {
-	using System;
-	using System.Collections.Generic;
-	using Internal;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-	using Resources;
-	using Validators;
+namespace FluentValidation.AspNetCore;
 
-	internal class RegexClientValidator : ClientValidatorBase {
+using System;
+using System.Collections.Generic;
+using Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Resources;
+using Validators;
 
-		public RegexClientValidator(IValidationRule rule, IRuleComponent component)
-			: base(rule, component) {
+internal class RegexClientValidator : ClientValidatorBase {
+
+	public RegexClientValidator(IValidationRule rule, IRuleComponent component)
+		: base(rule, component) {
+	}
+
+	public override void AddValidation(ClientModelValidationContext context) {
+		var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
+		var regexVal = (IRegularExpressionValidator)Validator;
+		var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
+		string messageTemplate;
+		try {
+			messageTemplate = Component.GetUnformattedErrorMessage();
+		}
+		catch (NullReferenceException) {
+			messageTemplate = cfg.LanguageManager.GetString("RegularExpressionValidator");
 		}
 
-		public override void AddValidation(ClientModelValidationContext context) {
-			var cfg = context.ActionContext.HttpContext.RequestServices.GetValidatorConfiguration();
-			var regexVal = (IRegularExpressionValidator)Validator;
-			var formatter = cfg.MessageFormatterFactory().AppendPropertyName(Rule.GetDisplayName(null));
-			string messageTemplate;
-			try {
-				messageTemplate = Component.GetUnformattedErrorMessage();
-			}
-			catch (NullReferenceException) {
-				messageTemplate = cfg.LanguageManager.GetString("RegularExpressionValidator");
-			}
+		string message = formatter.BuildMessage(messageTemplate);
 
-			string message = formatter.BuildMessage(messageTemplate);
-
-			MergeAttribute(context.Attributes, "data-val", "true");
-			MergeAttribute(context.Attributes, "data-val-regex", message);
-			MergeAttribute(context.Attributes, "data-val-regex-pattern", regexVal.Expression);
-		}
+		MergeAttribute(context.Attributes, "data-val", "true");
+		MergeAttribute(context.Attributes, "data-val-regex", message);
+		MergeAttribute(context.Attributes, "data-val-regex-pattern", regexVal.Expression);
 	}
 }
