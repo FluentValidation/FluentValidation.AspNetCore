@@ -113,7 +113,7 @@ internal static class MvcValidationHelper {
 		context.HttpContext.Items["_FV_Customizations"] = (model, customizations);
 	}
 
-	internal static void ReApplyImplicitRequiredErrorsNotHandledByFV(List<KeyValuePair<ModelStateEntry, ModelError>> requiredErrorsNotHandledByFv) {
+	internal static void ReApplyUnhandledImplicitRequiredErrors(List<KeyValuePair<ModelStateEntry, ModelError>> requiredErrorsNotHandledByFv) {
 		foreach (var pair in requiredErrorsNotHandledByFv) {
 			if (pair.Key.ValidationState != ModelValidationState.Invalid) {
 				pair.Key.Errors.Add(pair.Value);

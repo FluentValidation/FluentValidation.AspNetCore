@@ -63,7 +63,7 @@ internal class FluentValidationVisitor : ValidationVisitor {
 		var result = continuation();
 
 		// Re-add errors that we took out if FV didn't add a key.
-		ReApplyImplicitRequiredErrorsNotHandledByFV(requiredErrorsNotHandledByFv);
+		ReApplyUnhandledImplicitRequiredErrors(requiredErrorsNotHandledByFv);
 
 		// Remove duplicates. This can happen if someone has implicit child validation turned on and also adds an explicit child validator.
 		RemoveDuplicateModelstateEntries(Context);

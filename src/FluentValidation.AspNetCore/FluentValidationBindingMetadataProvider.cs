@@ -30,7 +30,7 @@ internal class FluentValidationBindingMetadataProvider : IBindingMetadataProvide
 	/// during the validation process.
 	/// <see cref="FluentValidationVisitor"/>
 	/// <see cref="MvcValidationHelper.RemoveImplicitRequiredErrors"/>
-	/// <see cref="MvcValidationHelper.ReApplyImplicitRequiredErrorsNotHandledByFV"/>
+	/// <see cref="MvcValidationHelper.ReApplyUnhandledImplicitRequiredErrors"/>
 	/// </summary>
 	/// <param name="context"></param>
 	public void CreateBindingMetadata(BindingMetadataProviderContext context) {
