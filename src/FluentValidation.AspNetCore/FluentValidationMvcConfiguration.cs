@@ -111,7 +111,7 @@ public class FluentValidationMvcConfiguration : FluentValidationAutoValidationCo
 	/// <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
 	/// <param name="lifetime">The service lifetime that should be used for the validator registration. Defaults to Scoped</param>
 	/// <param name="includeInternalTypes">Include internal validators. The default is false.</param>
-	// [Obsolete("RegisterValidatorsFromAssemblyContaining is deprecated. Call services.AddValidatorsFromAssemblyContaining<T> instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
+	[Obsolete("RegisterValidatorsFromAssemblyContaining is deprecated. Call services.AddValidatorsFromAssemblyContaining<T> instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
 	public FluentValidationMvcConfiguration RegisterValidatorsFromAssemblyContaining<T>(Func<AssemblyScanner.AssemblyScanResult, bool> filter = null, ServiceLifetime lifetime = ServiceLifetime.Scoped, bool includeInternalTypes = false) {
 		return RegisterValidatorsFromAssemblyContaining(typeof(T), filter, lifetime, includeInternalTypes);
 	}
@@ -123,7 +123,7 @@ public class FluentValidationMvcConfiguration : FluentValidationAutoValidationCo
 	/// <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
 	/// <param name="lifetime">The service lifetime that should be used for the validator registration. Defaults to Scoped</param>
 	/// <param name="includeInternalTypes">Include internal validators. The default is false.</param>
-	// [Obsolete("RegisterValidatorsFromAssemblyContaining is deprecated. Call services.AddValidatorsFromAssemblyContaining instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
+	[Obsolete("RegisterValidatorsFromAssemblyContaining is deprecated. Call services.AddValidatorsFromAssemblyContaining instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
 	public FluentValidationMvcConfiguration RegisterValidatorsFromAssemblyContaining(Type type, Func<AssemblyScanner.AssemblyScanResult, bool> filter = null, ServiceLifetime lifetime = ServiceLifetime.Scoped, bool includeInternalTypes = false) {
 		return RegisterValidatorsFromAssembly(type.Assembly, filter, lifetime, includeInternalTypes);
 	}
@@ -135,7 +135,7 @@ public class FluentValidationMvcConfiguration : FluentValidationAutoValidationCo
 	/// <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
 	/// <param name="lifetime">The service lifetime that should be used for the validator registration. Defaults to Scoped</param>
 	/// <param name="includeInternalTypes">Include internal validators. The default is false.</param>
-	// [Obsolete("RegisterValidatorsFromAssembly is deprecated. Call services.AddValidatorsFromAssembly instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
+	[Obsolete("RegisterValidatorsFromAssembly is deprecated. Call services.AddValidatorsFromAssembly instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
 	public FluentValidationMvcConfiguration RegisterValidatorsFromAssembly(Assembly assembly, Func<AssemblyScanner.AssemblyScanResult, bool> filter = null, ServiceLifetime lifetime = ServiceLifetime.Scoped, bool includeInternalTypes = false) {
 		_services.AddValidatorsFromAssembly(assembly, lifetime, filter, includeInternalTypes);
 
@@ -152,7 +152,7 @@ public class FluentValidationMvcConfiguration : FluentValidationAutoValidationCo
 	/// <param name="filter">Optional filter that allows certain types to be skipped from registration.</param>
 	/// <param name="lifetime">The service lifetime that should be used for the validator registration. Defaults to Scoped</param>
 	/// <param name="includeInternalTypes">Include internal validators. The default is false.</param>
-	// [Obsolete("RegisterValidatorsFromAssemblies is deprecated. Call services.AddValidatorsFromAssemblies instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
+	[Obsolete("RegisterValidatorsFromAssemblies is deprecated. Call services.AddValidatorsFromAssemblies instead, which has the same effect. See https://github.com/FluentValidation/FluentValidation/issues/1963")]
 	public FluentValidationMvcConfiguration RegisterValidatorsFromAssemblies(IEnumerable<Assembly> assemblies, Func<AssemblyScanner.AssemblyScanResult, bool> filter = null, ServiceLifetime lifetime = ServiceLifetime.Scoped, bool includeInternalTypes = false) {
 		_services.AddValidatorsFromAssemblies(assemblies, lifetime, filter, includeInternalTypes);
 
