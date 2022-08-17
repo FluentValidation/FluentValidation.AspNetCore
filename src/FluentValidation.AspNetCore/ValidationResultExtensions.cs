@@ -37,7 +37,7 @@ public static class ValidationResultExtension {
 	/// <param name="result">The validation result to store</param>
 	/// <param name="modelState">The ModelStateDictionary to store the errors in.</param>
 	/// <param name="prefix">An optional prefix. If omitted, the property names will be the keys. If specified, the prefix will be concatenated to the property name with a period. Eg "user.Name"</param>
-	public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState, string prefix) {
+	public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState, string prefix = null) {
 		if (!result.IsValid) {
 			foreach (var error in result.Errors) {
 				string key = string.IsNullOrEmpty(prefix)
