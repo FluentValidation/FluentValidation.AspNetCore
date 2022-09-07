@@ -156,6 +156,11 @@ public class TestController : Controller {
 		return TestResult();
 	}
 
+#if !NETCOREAPP3_1
+	public ActionResult ImplicitChildWithRecord([FromBody] ParentRecord model) {
+		return TestResult();
+	}
+#endif
 
 	public ActionResult CheckUnvalidated([FromBody] ParentModel6 model) {
 		return Content(ModelState.Count(x => x.Value.ValidationState == ModelValidationState.Unvalidated).ToString());

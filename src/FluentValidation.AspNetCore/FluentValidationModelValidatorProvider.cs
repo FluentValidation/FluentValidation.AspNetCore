@@ -187,6 +187,12 @@ public class FluentValidationModelValidator : IModelValidator {
 					return true;
 				}
 			}
+			else if (modelMetadata.MetadataKind == ModelMetadataKind.Parameter) {
+				// If we're working with record types then metadata kind will always be parameter.
+				if (!ReferenceEquals(rootMetadata, modelMetadata)) {
+					return true;
+				}
+			}
 		}
 
 		return false;

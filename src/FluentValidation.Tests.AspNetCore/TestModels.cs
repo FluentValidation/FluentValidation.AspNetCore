@@ -459,3 +459,21 @@ public class BadAsyncValidator : AbstractValidator<BadAsyncModel> {
 		});
 	}
 }
+
+#if !NETCOREAPP3_1
+public sealed record ParentRecord(string Name, ChildRecord Child);
+
+public record ChildRecord(int Count);
+
+public class ParentRecordValidator : AbstractValidator<ParentRecord> {
+	public ParentRecordValidator() {
+		RuleFor(x => x.Name).NotNull();
+	}
+}
+
+public class ChildRecordValidator : AbstractValidator<ChildRecord> {
+	public ChildRecordValidator() {
+		RuleFor(x => x.Count).GreaterThan(0);
+	}
+}
+#endif
