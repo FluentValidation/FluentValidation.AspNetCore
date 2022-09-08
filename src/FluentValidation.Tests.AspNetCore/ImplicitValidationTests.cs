@@ -39,6 +39,10 @@ public class ImplicitValidationTests : IClassFixture<WebAppFixture> {
 			services.AddScoped<IValidator<CollectionTestModel>, CollectionTestModelValidator>();
 			services.AddScoped<IValidator<TestModel>, TestModelValidator>();
 			services.AddScoped<IValidator<TestModel5>, TestModel5Validator>();
+#if !NETCOREAPP3_1
+			services.AddScoped<IValidator<ParentRecord>, ParentRecordValidator>();
+			services.AddScoped<IValidator<ChildRecord>, ChildRecordValidator>();
+#endif
 		});
 	}
 
@@ -192,5 +196,23 @@ public class ImplicitValidationTests : IClassFixture<WebAppFixture> {
 		var result = await CreateClient(true).GetErrors("SkipsImplicitChildValidator", new FormData());
 		result.Count.ShouldEqual(0);
 	}
+#if !NETCOREAPP3_1
+	[Fact]
+	public async void Does_not_run_child_validator_when_implicit_child_validation_disabled_for_record() {
+		var json = @"{""Name"": ""Foo"", ""Child"": { ""Count"": 0 } }";
+		var client = CreateClient(false);
+		var result = await client.GetErrorsViaJSONRaw("ImplicitChildWithRecord", json);
+		result.Count.ShouldEqual(0);
+	}
 
+	[Fact]
+	public async void Runs_child_validator_when_implicit_child_validation_enabled_for_record() {
+		var json = @"{""Name"": ""Foo"", ""Child"": { ""Count"": 0 } }";
+
+		var client = CreateClient(true);
+		var result = await client.GetErrorsViaJSONRaw("ImplicitChildWithRecord", json);
+		result.Count.ShouldEqual(1);
+		result[0].Name.ShouldEqual("Child.Count");
+	}
+#endif
 }
