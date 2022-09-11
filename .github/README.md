@@ -102,7 +102,7 @@ public void ConfigureServices(IServiceCollection services)
 
 Here we use the `AddValidatorsFromAssemblyContaining` method to automatically register all validators in the same assembly as `PersonValidator` with the service provider.
 
-Now that the validators are registered with the service provider you can start working with automatic validation or automatic validation.
+Now that the validators are registered with the service provider you can start working with manual validation or automatic validation.
 
 
 ## Automatic Validation
