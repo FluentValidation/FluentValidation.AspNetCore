@@ -38,6 +38,9 @@ public static class FluentValidationMvcExtensions {
 	///     An <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder" /> that can be used to further configure the
 	///     MVC services.
 	/// </returns>
+	/// <remarks>
+	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
+	/// </remarks>
 	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
 	public static IMvcCoreBuilder AddFluentValidation(this IMvcCoreBuilder mvcBuilder, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
 		mvcBuilder.Services.AddFluentValidation(configurationExpression);
@@ -52,6 +55,9 @@ public static class FluentValidationMvcExtensions {
 	///     An <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcBuilder" /> that can be used to further configure the
 	///     MVC services.
 	/// </returns>
+	/// <remarks>
+	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
+	/// </remarks>
 	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
 	public static IMvcBuilder AddFluentValidation(this IMvcBuilder mvcBuilder, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
 		mvcBuilder.Services.AddFluentValidation(configurationExpression);
@@ -66,6 +72,9 @@ public static class FluentValidationMvcExtensions {
 	/// <returns>
 	///     A reference to this instance after the operation has completed.
 	/// </returns>
+	/// <remarks>
+	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
+	/// </remarks>
 	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
 	public static IServiceCollection AddFluentValidation(this IServiceCollection services, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
 		var config = new FluentValidationMvcConfiguration(ValidatorOptions.Global, services);
@@ -140,7 +149,7 @@ public static class FluentValidationMvcExtensions {
 #pragma warning restore CS0618
 
 	/// <summary>
-	/// Enables integration between FluentValidation and ASP.NET client-side validation. See https://docs.fluentvalidation.net/en/latest/aspnet.html#clientside-validation for details.
+	/// Enables integration between FluentValidation and ASP.NET client-side validation. See <see href="https://docs.fluentvalidation.net/en/latest/aspnet.html#clientside-validation"/> for details.
 	/// </summary>
 	/// <param name="services">Service collection</param>
 	/// <param name="configuration">Configuration expression</param>
