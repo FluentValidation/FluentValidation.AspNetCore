@@ -29,6 +29,9 @@ Full release notes can be found at https://github.com/FluentValidation/FluentVal
     <NeutralLanguage>en</NeutralLanguage>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)/../FluentValidation-Release.snk</AssemblyOriginatorKeyFile>
     <PackageOutputPath>$(MSBuildProjectDirectory)/../../.build/packages</PackageOutputPath>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>11.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
@@ -41,7 +44,7 @@ Full release notes can be found at https://github.com/FluentValidation/FluentVal
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.*" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.*" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.*" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
