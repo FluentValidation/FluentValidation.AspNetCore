@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-    <VersionPrefix>11.2.2</VersionPrefix>
+    <TargetFramework>net6.0</TargetFramework>
+    <VersionPrefix>12.0.0</VersionPrefix>
     <AssemblyName>FluentValidation.AspNetCore</AssemblyName>
     <PackageId>FluentValidation.AspNetCore</PackageId>
     <Product>FluentValidation.AspNetCore</Product>
     <Description>AspNetCore integration for FluentValidation</Description>
     <PackageReleaseNotes>
-FluentValidation 11 is a major release. Please read the upgrade guide at https://docs.fluentvalidation.net/en/latest/upgrading-to-11.html
+FluentValidation 12 is a major release. Please read the upgrade guide at https://docs.fluentvalidation.net/en/latest/upgrading-to-12.html
 
 Full release notes can be found at https://github.com/FluentValidation/FluentValidation.AspNetCore/releases
     </PackageReleaseNotes>
@@ -29,7 +29,7 @@ Full release notes can be found at https://github.com/FluentValidation/FluentVal
     <NeutralLanguage>en</NeutralLanguage>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)/../FluentValidation-Release.snk</AssemblyOriginatorKeyFile>
     <PackageOutputPath>$(MSBuildProjectDirectory)/../../.build/packages</PackageOutputPath>
-    <EnablePackageValidation>true</EnablePackageValidation>
+    <EnablePackageValidation>false</EnablePackageValidation>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild Condition="'$(Configuration)'=='Release'">true</ContinuousIntegrationBuild>
@@ -42,8 +42,8 @@ Full release notes can be found at https://github.com/FluentValidation/FluentVal
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.*" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.*" />
+    <PackageReference Include="FluentValidation" Version="12.*" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.*" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.*" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
