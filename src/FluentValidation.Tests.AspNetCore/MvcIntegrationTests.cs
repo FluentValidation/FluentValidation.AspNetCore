@@ -23,9 +23,8 @@ public class MvcIntegrationTests : IClassFixture<WebAppFixture> {
 		_output = output;
 		_webApp = webApp;
 		_client = webApp.CreateClientWithServices(services => {
-#pragma warning disable CS0618
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation();
-#pragma warning restore CS0618
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddFluentValidationAutoValidation();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddScoped<IValidator<TestModel>, TestModelValidator>();
 			services.AddScoped<IValidator<TestModel3>, TestModelValidator3>();

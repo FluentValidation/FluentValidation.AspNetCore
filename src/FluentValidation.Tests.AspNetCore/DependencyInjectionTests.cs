@@ -10,8 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
-#pragma warning disable CS0618
-
 public class DependencyInjectionTests : IClassFixture<WebAppFixture> {
 	private readonly ITestOutputHelper _output;
 	private readonly HttpClient _client;
@@ -22,8 +20,11 @@ public class DependencyInjectionTests : IClassFixture<WebAppFixture> {
 		_output = output;
 		_client = webApp.WithWebHostBuilder(webHostBuilder => {
 				webHostBuilder.ConfigureServices(services => {
-					services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
+					services.AddMvc().AddNewtonsoftJson();
+					services.AddFluentValidationAutoValidation(fv => {
+#pragma warning disable CS0618
 						fv.ImplicitlyValidateChildProperties = false;
+#pragma warning restore CS0618
 					});
 					services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 					services.AddScoped<IValidator<ParentModel>, InjectsExplicitChildValidator>();

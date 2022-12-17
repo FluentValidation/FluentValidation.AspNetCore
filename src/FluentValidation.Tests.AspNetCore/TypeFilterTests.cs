@@ -38,9 +38,9 @@ public class TypeFilterTests : IClassFixture<WebAppFixture> {
 	[Fact]
 	public async Task Finds_and_executes_validator() {
 		var client = _webApp.CreateClientWithServices(services => {
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
-				fv.RegisterValidatorsFromAssemblyContaining<TestController>();
-			});
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddValidatorsFromAssemblyContaining<TestController>();
+			services.AddFluentValidationAutoValidation();
 		});
 		var result = await client.GetErrors("InjectsExplicitChildValidator");
 
@@ -52,11 +52,11 @@ public class TypeFilterTests : IClassFixture<WebAppFixture> {
 	[Fact]
 	public async Task Filters_types() {
 		var client = _webApp.CreateClientWithServices(services => {
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
-				fv.RegisterValidatorsFromAssemblyContaining<TestController>(scanResult => {
-					return scanResult.ValidatorType != typeof(InjectsExplicitChildValidator);
-				});
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddValidatorsFromAssemblyContaining<TestController>(filter: scanResult => {
+				return scanResult.ValidatorType != typeof(InjectsExplicitChildValidator);
 			});
+			services.AddFluentValidationAutoValidation();
 		});
 
 		var result = await client.GetErrors("InjectsExplicitChildValidator");
