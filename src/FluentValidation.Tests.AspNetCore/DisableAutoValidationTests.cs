@@ -35,12 +35,8 @@ public class DisableAutoValidationTests : IClassFixture<WebAppFixture> {
 	[Fact]
 	public async Task Disables_automatic_validation() {
 		var client = _webApp.CreateClientWithServices(services => {
-#pragma warning disable CS0618
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
-				fv.RegisterValidatorsFromAssemblyContaining<TestController>();
-				fv.AutomaticValidationEnabled = false;
-			});
-#pragma warning restore CS0618
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddValidatorsFromAssemblyContaining<TestController>();
 		});
 
 		var result = await client.GetErrors("InjectsExplicitChildValidator");
@@ -52,14 +48,8 @@ public class DisableAutoValidationTests : IClassFixture<WebAppFixture> {
 	[Fact]
 	public async Task Disables_automatic_validation_for_implicit_validation() {
 		var client = _webApp.CreateClientWithServices(services => {
-#pragma warning disable CS0618
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
-				fv.RegisterValidatorsFromAssemblyContaining<TestController>();
-				fv.ImplicitlyValidateChildProperties = true;
-				// Disabling auto validation supersedes enabling implicit validation.
-				fv.AutomaticValidationEnabled = false;
-			});
-#pragma warning restore CS0618
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddValidatorsFromAssemblyContaining<TestController>();
 		});
 
 		var result = await client.GetErrors("ImplicitChildValidator");

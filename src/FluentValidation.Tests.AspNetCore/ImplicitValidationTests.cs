@@ -24,7 +24,8 @@ public class ImplicitValidationTests : IClassFixture<WebAppFixture> {
 
 	private HttpClient CreateClient(bool implicitValidationEnabled) {
 		return _app.CreateClientWithServices(services => {
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddFluentValidationAutoValidation(fv => {
 				fv.ImplicitlyValidateChildProperties = implicitValidationEnabled;
 			});
 			services.AddScoped<IValidator<ParentModel>, ParentModelValidator>();

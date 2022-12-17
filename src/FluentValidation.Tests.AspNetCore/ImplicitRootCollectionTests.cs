@@ -17,7 +17,8 @@ public class ImplicitRootCollectionTests : IClassFixture<WebAppFixture> {
 
 	private HttpClient CreateClient(bool implicitCollectionValidationEnabled) {
 		return _app.CreateClientWithServices(services => {
-			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
+			services.AddMvc().AddNewtonsoftJson();
+			services.AddFluentValidationAutoValidation(fv => {
 				fv.ImplicitlyValidateRootCollectionElements = implicitCollectionValidationEnabled;
 			});
 			services.AddScoped<IValidator<ParentModel>, ParentModelValidator>();

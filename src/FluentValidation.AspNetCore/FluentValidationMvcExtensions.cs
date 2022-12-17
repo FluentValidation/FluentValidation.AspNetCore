@@ -30,74 +30,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class FluentValidationMvcExtensions {
-	/// <summary>
-	///     Adds Fluent Validation services to the specified
-	///     <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcBuilder" />.
-	/// </summary>
-	/// <returns>
-	///     An <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder" /> that can be used to further configure the
-	///     MVC services.
-	/// </returns>
-	/// <remarks>
-	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
-	/// </remarks>
-	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
-	public static IMvcCoreBuilder AddFluentValidation(this IMvcCoreBuilder mvcBuilder, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
-		mvcBuilder.Services.AddFluentValidation(configurationExpression);
-		return mvcBuilder;
-	}
-
-	/// <summary>
-	///     Adds Fluent Validation services to the specified
-	///     <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcBuilder" />.
-	/// </summary>
-	/// <returns>
-	///     An <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcBuilder" /> that can be used to further configure the
-	///     MVC services.
-	/// </returns>
-	/// <remarks>
-	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
-	/// </remarks>
-	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
-	public static IMvcBuilder AddFluentValidation(this IMvcBuilder mvcBuilder, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
-		mvcBuilder.Services.AddFluentValidation(configurationExpression);
-		return mvcBuilder;
-	}
 
 #pragma warning disable CS0618
-	/// <summary>
-	///     Adds Fluent Validation services to the specified
-	///     <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
-	/// </summary>
-	/// <returns>
-	///     A reference to this instance after the operation has completed.
-	/// </returns>
-	/// <remarks>
-	///		Calling AddFluentValidation() is deprecated. Call <c>services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()</c> instead, which has the same effect. For details see <see href="https://github.com/FluentValidation/FluentValidation/issues/1965"/>.
-	/// </remarks>
-	[Obsolete("Calling AddFluentValidation() is deprecated. Call services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters() instead, which has the same effect. For details see https://github.com/FluentValidation/FluentValidation/issues/1965")]
-	public static IServiceCollection AddFluentValidation(this IServiceCollection services, Action<FluentValidationMvcConfiguration> configurationExpression = null) {
-		var config = new FluentValidationMvcConfiguration(ValidatorOptions.Global, services);
-		configurationExpression?.Invoke(config);
-
-		services.AddSingleton(config.ValidatorOptions);
-
-		if (config.AutomaticValidationEnabled) {
-			services.AddFluentValidationAutoValidation(cfg => {
-				cfg.DisableDataAnnotationsValidation = config.DisableDataAnnotationsValidation;
-				cfg.ImplicitlyValidateChildProperties = config.ImplicitlyValidateChildProperties;
-				cfg.ImplicitlyValidateRootCollectionElements = config.ImplicitlyValidateRootCollectionElements;
-				cfg.ValidatorFactory = config.ValidatorFactory;
-				cfg.ValidatorFactoryType = config.ValidatorFactoryType;
-			});
-		}
-
-		if (config.ClientsideEnabled) {
-			services.AddFluentValidationClientsideAdapters(config.ClientsideConfig);
-		}
-
-		return services;
-	}
 
 	/// <summary>
 	/// Enables integration between FluentValidation and ASP.NET MVC's automatic validation pipeline.
