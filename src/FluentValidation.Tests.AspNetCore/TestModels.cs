@@ -477,3 +477,65 @@ public class ChildRecordValidator : AbstractValidator<ChildRecord> {
 	}
 }
 #endif
+
+public class AutoFilterParentWithCollectionModel{
+	public int? Id { get; set; }
+	public List<AutoFilterModel> ChildModels { get; set;}
+}
+
+public class AutoFilterParentModel {
+	public int? Id { get; set; }
+	public AutoFilterModel ChildModel { get; set;}
+}
+
+public class AutoFilterModel { 
+	public string Surname { get; set; } 
+	public string Forename { get; set; } 
+	public string Email { get; set; } 
+	public DateTime? DateOfBirth { get; set; } 
+	public string Address1 { get; set; } 
+} 
+ 
+public class AutoFilterChildModelValidator : AbstractValidator<AutoFilterModel> { 
+	public AutoFilterChildModelValidator() { 
+		RuleFor(x => x.Surname) 
+			.NotEmpty() 
+			.NotEqual(x => x.Forename); 
+ 
+		RuleFor(x => x.Email) 
+			.NotEmpty() 
+			.EmailAddress(); 
+ 
+		RuleFor(x => x.DateOfBirth) 
+			.NotEmpty(); 
+ 
+		RuleFor(x => x.Address1).NotEmpty(); 
+	} 
+}
+
+public class AutoFilterParentModelValidator : AbstractValidator<AutoFilterParentModel> { 
+	public AutoFilterParentModelValidator() { 
+		RuleFor(x => x.Id) 
+			.NotEmpty(); 
+ 
+		RuleFor(x => x.ChildModel)
+			.NotEmpty()
+			.SetValidator(new AutoFilterChildModelValidator());
+	} 
+}
+
+public class AutoFilterRootCollectionValidator: AbstractValidator<List<AutoFilterModel>> {
+		public AutoFilterRootCollectionValidator() {
+			RuleForEach(x => x).SetValidator(new AutoFilterChildModelValidator());
+	}
+}
+
+public class AutoFilterParentWithCollectionModelValidator : AbstractValidator<AutoFilterParentWithCollectionModel> {
+		public AutoFilterParentWithCollectionModelValidator() {
+			RuleFor(x => x.Id) 
+				.NotEmpty();
+
+			RuleForEach(x => x.ChildModels).SetValidator(new AutoFilterChildModelValidator());
+		}
+}
+

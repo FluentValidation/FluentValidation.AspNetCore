@@ -139,7 +139,8 @@ public static class FluentValidationMvcExtensions {
 			if (!options.ModelValidatorProviders.Any(x => x is FluentValidationModelValidatorProvider)) {
 				options.ModelValidatorProviders.Insert(0, new FluentValidationModelValidatorProvider(
 					config.ImplicitlyValidateChildProperties,
-					config.ImplicitlyValidateRootCollectionElements));
+					config.ImplicitlyValidateRootCollectionElements,
+					config.Filter));
 			}
 		});
 
