@@ -146,7 +146,7 @@ public class FluentValidationModelValidator : IModelValidator {
 	}
 
 	protected bool ShouldSkip(ModelValidationContext mvContext) {
-		//Apply customer filter (if specified)
+		//Apply custom filter (if specified)
 		//validation will be skipped unless we match on this filter
 		if (_filter != null && !_filter.Invoke(mvContext.ModelMetadata.ModelType)) {
 			return true;
