@@ -206,6 +206,22 @@ public class TestController : Controller {
 		return TestResult();
 	}
 
+	public ActionResult AutoFilter(AutoFilterModel test) { 
+		return TestResult(); 
+	}
+
+	public ActionResult AutoFilterParent(AutoFilterParentModel test) { 
+		return TestResult(); 
+	}
+
+	public ActionResult AutoFilterRootCollection(List<AutoFilterModel> test) { 
+		return TestResult(); 
+	}
+
+	public ActionResult AutoFilterParentWithCollection(AutoFilterParentWithCollectionModel test) { 
+		return TestResult(); 
+	}
+
 	private ActionResult TestResult() {
 		var errors = new List<SimpleError>();
 

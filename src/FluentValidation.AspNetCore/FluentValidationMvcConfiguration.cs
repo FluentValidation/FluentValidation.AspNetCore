@@ -60,6 +60,15 @@ public class FluentValidationAutoValidationConfiguration {
 	/// Setting this to true will disable DataAnnotations and only run FluentValidation.
 	/// </summary>
 	public bool DisableDataAnnotationsValidation { get; set; }
+
+
+	/// <summary>
+	/// When specified, automatic validation will only apply to the types matched by the filter.
+	/// If the filter does not match, automatic validation will not be applied.  This can be useful
+	/// for specific situations where you want to opt in/out of automatic validation
+	/// Example: Filter = type => type == typeof(Model)
+	/// </summary>
+	public Func<Type, bool> Filter { get; set; }
 }
 
 /// <summary>
