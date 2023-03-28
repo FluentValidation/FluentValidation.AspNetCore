@@ -45,6 +45,12 @@ public class FluentValidationModelValidatorProvider : IModelValidatorProvider {
 
 	public FluentValidationModelValidatorProvider(
 		bool implicitValidationEnabled,
+		bool implicitRootCollectionElementValidationEnabled)
+		: this(implicitValidationEnabled, implicitRootCollectionElementValidationEnabled, default) {
+	}
+
+	public FluentValidationModelValidatorProvider(
+		bool implicitValidationEnabled,
 		bool implicitRootCollectionElementValidationEnabled,
 		Func<Type, bool> filter) {
 		_implicitValidationEnabled = implicitValidationEnabled;
@@ -70,6 +76,12 @@ public class FluentValidationModelValidator : IModelValidator {
 
 	public FluentValidationModelValidator(bool implicitValidationEnabled)
 		: this(implicitValidationEnabled, false, default) {
+	}
+
+	public FluentValidationModelValidator(
+		bool implicitValidationEnabled,
+		bool implicitRootCollectionElementValidationEnabled)
+		: this(implicitValidationEnabled, implicitRootCollectionElementValidationEnabled, default) {
 	}
 
 	public FluentValidationModelValidator(
