@@ -37,22 +37,31 @@ using Results;
 public class FluentValidationModelValidatorProvider : IModelValidatorProvider {
 	private readonly bool _implicitValidationEnabled;
 	private readonly bool _implicitRootCollectionElementValidationEnabled;
+	private readonly Func<Type, bool> _filter;
 
 	public FluentValidationModelValidatorProvider(bool implicitValidationEnabled)
-		: this(implicitValidationEnabled, false) {
+		: this(implicitValidationEnabled, false, default) {
 	}
 
 	public FluentValidationModelValidatorProvider(
 		bool implicitValidationEnabled,
-		bool implicitRootCollectionElementValidationEnabled) {
+		bool implicitRootCollectionElementValidationEnabled)
+		: this(implicitValidationEnabled, implicitRootCollectionElementValidationEnabled, default) {
+	}
+
+	public FluentValidationModelValidatorProvider(
+		bool implicitValidationEnabled,
+		bool implicitRootCollectionElementValidationEnabled,
+		Func<Type, bool> filter) {
 		_implicitValidationEnabled = implicitValidationEnabled;
 		_implicitRootCollectionElementValidationEnabled = implicitRootCollectionElementValidationEnabled;
+		_filter = filter;
 	}
 
 	public virtual void CreateValidators(ModelValidatorProviderContext context) {
 		context.Results.Add(new ValidatorItem {
 			IsReusable = false,
-			Validator = new FluentValidationModelValidator(_implicitValidationEnabled, _implicitRootCollectionElementValidationEnabled),
+			Validator = new FluentValidationModelValidator(_implicitValidationEnabled, _implicitRootCollectionElementValidationEnabled, _filter),
 		});
 	}
 }
@@ -63,16 +72,25 @@ public class FluentValidationModelValidatorProvider : IModelValidatorProvider {
 public class FluentValidationModelValidator : IModelValidator {
 	private readonly bool _implicitValidationEnabled;
 	private readonly bool _implicitRootCollectionElementValidationEnabled;
+	private readonly Func<Type, bool> _filter;
 
 	public FluentValidationModelValidator(bool implicitValidationEnabled)
-		: this(implicitValidationEnabled, false) {
+		: this(implicitValidationEnabled, false, default) {
 	}
 
 	public FluentValidationModelValidator(
 		bool implicitValidationEnabled,
-		bool implicitRootCollectionElementValidationEnabled) {
+		bool implicitRootCollectionElementValidationEnabled)
+		: this(implicitValidationEnabled, implicitRootCollectionElementValidationEnabled, default) {
+	}
+
+	public FluentValidationModelValidator(
+		bool implicitValidationEnabled,
+		bool implicitRootCollectionElementValidationEnabled,
+		Func<Type, bool> filter) {
 		_implicitValidationEnabled = implicitValidationEnabled;
 		_implicitRootCollectionElementValidationEnabled = implicitRootCollectionElementValidationEnabled;
+		_filter = filter;
 	}
 
 	public virtual IEnumerable<ModelValidationResult> Validate(ModelValidationContext mvContext) {
@@ -140,6 +158,12 @@ public class FluentValidationModelValidator : IModelValidator {
 	}
 
 	protected bool ShouldSkip(ModelValidationContext mvContext) {
+		//Apply custom filter (if specified)
+		//validation will be skipped unless we match on this filter
+		if (_filter != null && !_filter.Invoke(mvContext.ModelMetadata.ModelType)) {
+			return true;
+		}
+
 		// Skip if there's nothing to process.
 		if (mvContext.Model == null) {
 			return true;
