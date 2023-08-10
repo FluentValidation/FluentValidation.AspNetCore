@@ -1,3 +1,11 @@
+# No longer supported
+
+## The FluentValidation.AspNetCore package is no longer being maintained and is now unsupported. We encourage users move away from this package and use the core FluentValidation package with a manual validation approach as detailed at  https://docs.fluentvalidation.net/en/latest/aspnet.html 
+
+## Further details about this decision can be found at https://github.com/FluentValidation/FluentValidation/issues/1959
+
+## The existing code and documentation remains here for reference but will not receive any new features or fixes.
+
 # ASP.NET Core integration for FluentValidation
 
 [![Build Status](https://github.com/FluentValidation/FluentValidation.AspNetCore/workflows/CI/badge.svg)](https://github.com/FluentValidation/FluentValidation.AspNetCore/actions?query=workflow%3ACI) [![NuGet](https://img.shields.io/nuget/v/FluentValidation.AspNetCore.svg)](https://nuget.org/packages/FluentValidation.AspNetCore)
