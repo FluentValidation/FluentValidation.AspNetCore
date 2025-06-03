@@ -42,10 +42,10 @@ public class TypeFilterTests : IClassFixture<WebAppFixture> {
 				fv.RegisterValidatorsFromAssemblyContaining<TestController>();
 			});
 		});
-		var result = await client.GetErrors("InjectsExplicitChildValidator");
+		var result = await client.GetErrors("Test1");
 
 		// Validator was found and executed so field shouldn't be valid.
-		result.IsValidField("Child.Name").ShouldBeFalse();
+		result.IsValidField("Name").ShouldBeFalse();
 
 	}
 
@@ -54,14 +54,14 @@ public class TypeFilterTests : IClassFixture<WebAppFixture> {
 		var client = _webApp.CreateClientWithServices(services => {
 			services.AddMvc().AddNewtonsoftJson().AddFluentValidation(fv => {
 				fv.RegisterValidatorsFromAssemblyContaining<TestController>(scanResult => {
-					return scanResult.ValidatorType != typeof(InjectsExplicitChildValidator);
+					return scanResult.ValidatorType != typeof(TestModelValidator);
 				});
 			});
 		});
 
-		var result = await client.GetErrors("InjectsExplicitChildValidator");
+		var result = await client.GetErrors("Test1");
 
 		// Should be valid as the validator was skipped.
-		result.IsValidField("Child.Name").ShouldBeTrue();
+		result.IsValidField("Name").ShouldBeTrue();
 	}
 }

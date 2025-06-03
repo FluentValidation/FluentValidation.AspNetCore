@@ -422,6 +422,7 @@ public class ChildModel7 {
 	public string Name { get; set; }
 }
 
+#if !NET9_0
 public class InjectsExplicitChildValidator : AbstractValidator<ParentModel> {
 	public InjectsExplicitChildValidator() {
 #pragma warning disable CS0618
@@ -443,6 +444,7 @@ public class InjectsExplicitChildValidatorCollection : AbstractValidator<ParentM
 #pragma warning restore CS0618
 	}
 }
+#endif
 
 public class BadAsyncModel {
 	public int Id { get; set; }
