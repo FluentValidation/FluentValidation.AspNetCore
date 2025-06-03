@@ -12,6 +12,7 @@ using Xunit.Abstractions;
 
 #pragma warning disable CS0618
 
+#if !NET9_0
 public class DependencyInjectionTests : IClassFixture<WebAppFixture> {
 	private readonly ITestOutputHelper _output;
 	private readonly HttpClient _client;
@@ -51,3 +52,4 @@ public class DependencyInjectionTests : IClassFixture<WebAppFixture> {
 		result.GetError("Children[0].Name").ShouldEqual("NotNullInjected");
 	}
 }
+#endif

@@ -133,9 +133,13 @@ public class FluentValidationModelValidator : IModelValidator {
 
 			IValidationContext context = new ValidationContext<object>(mvContext.Model, new PropertyChain(), selector);
 			context.RootContextData["InvokedByMvc"] = true;
-#pragma warning disable CS0618
-			context.SetServiceProvider(mvContext.ActionContext.HttpContext.RequestServices);
-#pragma warning restore CS0618
+
+			// For backwards compatibility, store the service provider in the validation context.
+			// This approach works with both FluentValidation.DependencyInjectionExtensions 11.x
+			// and FluentValidation.DependencyInjectionExtensions 12.x.
+			// Do not use context.SetServiceProvider extension method as this no longer
+			// exists in 12.x.
+			context.RootContextData["_FV_ServiceProvider"] = mvContext.ActionContext.HttpContext.RequestServices;
 
 			if (interceptor != null) {
 				// Allow the user to provide a customized context
